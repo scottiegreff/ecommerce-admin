@@ -9,6 +9,11 @@ interface useProductModalStore {
   onClose: () => void;
 }
 
+/**
+ * Custom hook for managing the product modal state.
+ *
+ * @returns An object containing the state and functions for managing the product modal.
+ */
 export const useProductModal = create<useProductModalStore>((set) => ({
   isOpen: false,
   isEdit: false,

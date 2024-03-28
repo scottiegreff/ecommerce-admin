@@ -9,6 +9,11 @@ interface useCategoryModalStore {
   onClose: () => void;
 }
 
+/**
+ * Custom hook for managing the category modal state.
+ *
+ * @returns An object containing the category modal state and its related functions.
+ */
 export const useCategoryModal = create<useCategoryModalStore>((set) => ({
   isOpen: false,
   isEdit: false,

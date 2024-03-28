@@ -6,6 +6,11 @@ interface useStoreModalStore {
   onClose: () => void;
 }
 
+/**
+ * Custom hook for managing the store modal state.
+ *
+ * @returns An object containing the isOpen state, as well as the onOpen and onClose functions.
+ */
 export const useStoreModal = create<useStoreModalStore>((set) => ({
   isOpen: false,
   onOpen: () => set({ isOpen: true }),

@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
-
+/**
+ * @param req The request object.
+ * @param params The parameters object containing the store ID. 
+ * @returns A JSON response with the list of billboards.
+ */
 export async function GET(
   req: Request,
   { params }: { params: { billboardId: string } }
@@ -25,6 +29,12 @@ export async function GET(
   }
 };
 
+/**
+ * Deletes a billboard with the specified ID.
+ * @param req - The request object.
+ * @param params - The parameters object containing the billboard ID and store ID.
+ * @returns A JSON response with the updated billboard data.
+ */
 export async function DELETE(
   req: Request,
   { params }: { params: { billboardId: string, storeId: string } }
@@ -40,6 +50,7 @@ export async function DELETE(
       return new NextResponse("Billboard id is required", { status: 400 });
     }
 
+    // Check if the store exists and belongs to the user
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
@@ -51,6 +62,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
+    // Delete the billboard
     const billboard = await prismadb.billboard.delete({
       where: {
         id: params.billboardId,
@@ -65,6 +77,12 @@ export async function DELETE(
 };
 
 
+/**
+ * Updates a billboard with the specified ID.
+ * @param req - The request object.
+ * @param params - The parameters object containing the billboard ID and store ID.
+ * @returns A JSON response with the updated billboard data.
+ */
 export async function PATCH(
   req: Request,
   { params }: { params: { billboardId: string, storeId: string } }
@@ -92,6 +110,7 @@ export async function PATCH(
       return new NextResponse("Billboard id is required", { status: 400 });
     }
 
+    // Check if the store exists and belongs to the user
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
