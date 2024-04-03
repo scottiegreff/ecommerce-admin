@@ -6,7 +6,7 @@ import { ToastProvider } from "@/providers/toast-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 
 import "./globals.css";
-import prismadb from "@/lib/prismadb";
+// import prismadb from "@/lib/prismadb";
 
 const inter = Inter({ subsets: ["latin"] });
 
