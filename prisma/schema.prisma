@@ -13,13 +13,28 @@ model Store {
   userId     String
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  heros      Hero[]      @relation("StoreToHero")
+  employees  Employee[]  @relation("StoreToEmployee")
   billboards Billboard[] @relation("StoreToBillboard")
   categories Category[]  @relation("StoreToCategory")
   colors     Color[]     @relation("StoreToColor")
-  heros      Hero[]      @relation("StoreToHero")
   orders     Order[]     @relation("StoreToOrder")
   products   Product[]   @relation("StoreToProduct")
   sizes      Size[]      @relation("StoreToSize")
+}
+
+model Employee {
+  id        String      @id @default(uuid())
+  storeId   String
+  name      String
+  email     String   @unique
+  phone     String
+  hours     String[]
+  createdAt DateTime @default(now())
+  isActive  Boolean  @default(true)
+  store     Store    @relation("StoreToEmployee", fields: [storeId], references: [id])
+
+  @@index([storeId])
 }
 
 model Hero {
