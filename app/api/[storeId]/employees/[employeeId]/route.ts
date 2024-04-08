@@ -122,7 +122,9 @@ export async function PATCH(
         name,
         email,
         phone,
-        hours,
+        hours: {
+          push: hours,
+        },
         isActive,
       },
     });

@@ -31,7 +31,7 @@ export function DatePickerWithRange({
     setDate(selected);
   }, [selected, setSelected]);
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("grid gap-2 text-gray-400", className)}>
       <label className="text-sm font-semibold text-gray-600">DATE OF WORK</label>
       <Popover>
         <PopoverTrigger asChild>
@@ -39,11 +39,11 @@ export function DatePickerWithRange({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
+              "w-[300px] justify-start text-left font-normal text-xs",
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 h-4 w-4 "/>
             {date?.from ? (
               date.to ? (
                 <>

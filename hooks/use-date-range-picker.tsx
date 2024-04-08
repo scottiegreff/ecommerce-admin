@@ -1,4 +1,4 @@
-import { DateRange, SelectRangeEventHandler } from "react-day-picker";
+import { DateRange } from "react-day-picker";
 import { create } from "zustand";
 
 interface useDateRangePickerInterface {
@@ -10,6 +10,5 @@ export const useDateRangePicker = create<useDateRangePickerInterface>(
   (set) => ({
     date: undefined,
     setDate: (newDate ) => set({date: newDate}),
-    // updateDate: (newDate: ) => set({ date: newDate }),
   })
 );
