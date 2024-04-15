@@ -3,9 +3,9 @@ import prismadb from "@/lib/prismadb";
 import { EmployeeForm } from "./components/employee-form";
 
 const EmployeePage = async ({
-  params
+  params,
 }: {
-  params: { employeeId: string, storeId: string }
+  params: { employeeId: string; storeId: string };
 }) => {
   const employee = await prismadb.employee.findUnique({
     where: {
@@ -13,16 +13,14 @@ const EmployeePage = async ({
     },
   });
 
-  return ( 
+  return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <EmployeeForm 
-          initialData={employee}
-        />
+        <EmployeeForm initialData={employee} />
       </div>
     </div>
   );
-}
+};
 
 export default EmployeePage;
 
@@ -45,5 +43,3 @@ export default EmployeePage;
 //     },
 //   },
 // });
-
-

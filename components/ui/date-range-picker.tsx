@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { CalendarIcon } from "lucide-react";
 import { addDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
-import { useDateRangePicker } from "@/hooks/use-date-range-picker";
+import { useDateRangePickerStore } from "@/hooks/use-date-range-picker";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,15 +21,15 @@ export function DatePickerWithRange({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [selected, setSelected] = useState<DateRange | undefined>({
     from: new Date(Date.now()),
-    to: addDays(new Date(Date.now()),0),
+    to: addDays(new Date(Date.now()),2),
   });
 
-  const { date, setDate } = useDateRangePicker();
+  const { date, setDate } = useDateRangePickerStore();
 
   useEffect(() => {
-    // console.log("select, setSelect", selected, setSelected);
     setDate(selected);
   }, [selected, setSelected]);
+  
   return (
     <div className={cn("grid gap-2 text-gray-400", className)}>
       <label className="text-sm font-semibold text-gray-600">DATE OF WORK</label>
@@ -58,7 +58,7 @@ export function DatePickerWithRange({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 " align="start">
           <Calendar
             initialFocus
             mode="range"

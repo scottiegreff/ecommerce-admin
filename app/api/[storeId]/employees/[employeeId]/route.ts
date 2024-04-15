@@ -73,7 +73,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { name, email, phone, hours, isActive } = body;
+    const { name, email, phone, isActive } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -93,10 +93,6 @@ export async function PATCH(
 
     if (!phone) {
       return new NextResponse("Phone is required", { status: 400 });
-    }
-
-    if (!hours || !hours.length) {
-      return new NextResponse("Date is required", { status: 400 });
     }
 
     if (!isActive) {
@@ -122,9 +118,6 @@ export async function PATCH(
         name,
         email,
         phone,
-        hours: {
-          push: hours,
-        },
         isActive,
       },
     });

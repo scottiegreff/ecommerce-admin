@@ -6,7 +6,7 @@ interface useDateRangePickerInterface {
   setDate: (newDate: DateRange | undefined) => void;
 }
 
-export const useDateRangePicker = create<useDateRangePickerInterface>(
+export const useDateRangePickerStore = create<useDateRangePickerInterface>(
   (set) => ({
     date: undefined,
     setDate: (newDate ) => set({date: newDate}),

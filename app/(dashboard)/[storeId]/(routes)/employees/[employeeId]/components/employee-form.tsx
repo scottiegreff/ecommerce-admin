@@ -9,9 +9,6 @@ import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
 import { Employee } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
-import { useDateRangePicker } from "@/hooks/use-date-range-picker";
-import { DatePickerWithRange } from "@/components/ui/date-range-picker";
-import { hours } from "@/public/hours";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,41 +24,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
-
 import { Checkbox } from "@/components/ui/checkbox";
-import { is } from "date-fns/locale";
-import { set } from "date-fns";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
-import { CalendarIcon } from "lucide-react";
-import { addDays, format } from "date-fns";
-import { DateRange, DayPicker } from "react-day-picker";
-import "react-day-picker/dist/style.css";
-
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 const formSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   phone: z.string().min(1),
-  dateRange: z.date(),
-  startTime: z.string().min(1),
-  endTime: z.string().min(1),
   isActive: z.boolean().default(true),
 });
 
@@ -69,50 +39,21 @@ type EmployeeFormValues = z.infer<typeof formSchema>;
 
 interface EmployeeFormProps {
   initialData: Employee | null;
-  // name: string;
-  // email: string;
-  // phone: string;
-  // hours: string;
-  // isActive: boolean;
 }
 
-export const EmployeeForm: React.FC<EmployeeFormProps> = ({
-  initialData,
-  // name,
-  // email,
-  // phone,
-  // hours,
-  // isActive,
-}) => {
+export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  // export function DatePickerWithRange({
-  //   className,
-  // }: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(Date.now()),
-    to: addDays(new Date(Date.now()), 0),
-  });
-
-  const pastMonth = new Date();
-
-  const defaultSelected: DateRange = {
-    from: pastMonth,
-    to: addDays(pastMonth, 4),
-  };
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(
-    defaultSelected
-  );
-  const [startHour, setStartHour] = useState<String>();
-  const [endHour, setEndHour] = useState<String>();
 
   const title = initialData ? "Edit staff" : "Create staff";
   const description = initialData ? "Edit a staff." : "Add a new staff";
   const toastMessage = initialData ? "Staff updated." : "Staff created.";
   const action = initialData ? "Save changes" : "Create";
 
+  // CONSOLE LOGGING
+  console.log("INITIAL DATA FROM FORM", initialData);
   const defaultValues = initialData
     ? {
         ...initialData,
@@ -121,37 +62,30 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
         name: "",
         email: "",
         phone: "",
-        // date: "",
-        // startTime: "",
-        // endTime: "",
-        hours: [],
       };
 
-  // console.log("INITIAL VALUES", defaultValues);
   const form = useForm<EmployeeFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      ...defaultValues,
-      // hours: defaultValues.hours.map(
-      //   (dateRange) => dateRange?.toString() ?? ""
-      // ),
-    },
+    ...defaultValues,
   });
 
-  const onSubmit = async (data: EmployeeFormValues) => {
-    const employeeHoursArr = [];
-    employeeHoursArr.push(hours);
-
-    console.log("DATA", data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    // let fromDateHour = date?.from?.getHours();
+    // let toDateHour = date?.to?.getHours();
+    // const startDate = date?.from?.setHours(data.startTime) as unknown as Date;
+    // const endDate: Date = date?.to?.setHours(data.endTime) as unknown as Date;;
+    console.log("DATA FROM FORM", data);
 
     try {
       setLoading(true);
       if (initialData) {
+        console.log("PATCHING");
         await axios.patch(
           `/api/${params.storeId}/employees/${params.employeeId}`,
           data
         );
       } else {
+        console.log("POSTING");
         await axios.post(`/api/${params.storeId}/employees`, data);
       }
       router.refresh();
@@ -265,115 +199,6 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
               )}
             />
 
-            {/* CALENDAR */}
-            {/* <FormField
-              control={form.control}
-              name="dateRange"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date of birth</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value.from && field.value.to ? (
-                            `${format(field.value.from, "PPP")} to ${format(
-                              field.value.to,
-                              "PPP"
-                            )}`
-                          ) : (
-                            <span>Pick a date range</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="range"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    {/* Your description here */}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-
-            {/* <DatePickerWithRange /> */}
-
-            {/* START TIME */}
-            <FormField
-              control={form.control}
-              name="startTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>START TIME</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="text-xs text-gray-400 w-[280px]">
-                        <SelectValue placeholder="Select a time to START work" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="max-h-[50vh] overflow-y-auto">
-                      <SelectGroup>
-                        {hours.map((hour) => (
-                          <SelectItem key={hour.hour} value={hour.hour}>
-                            {hour.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
-            {/* END TIME */}
-            <FormField
-              control={form.control}
-              name="startTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>END TIME</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="text-xs text-gray-400 w-[280px]">
-                        <SelectValue placeholder="Select a time to END work" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="max-h-[50vh] overflow-y-auto">
-                      <SelectGroup>
-                        {hours.map((hour) => (
-                          <SelectItem key={hour.hour} value={hour.hour}>
-                            {hour.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
             {/* ACTIVE */}
             <FormField
               control={form.control}
@@ -398,9 +223,12 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
               )}
             />
           </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
+          <Separator />
+          <div className="flex justify-end">
+            <Button type="submit" disabled={loading}>
+              {action}
+            </Button>
+          </div>
         </form>
       </Form>
     </>

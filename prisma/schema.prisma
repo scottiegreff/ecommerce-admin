@@ -15,6 +15,7 @@ model Store {
   updatedAt  DateTime    @updatedAt
   heros      Hero[]      @relation("StoreToHero")
   employees  Employee[]  @relation("StoreToEmployee")
+  hours      Hour[]     @relation("StoreToHours")
   billboards Billboard[] @relation("StoreToBillboard")
   categories Category[]  @relation("StoreToCategory")
   colors     Color[]     @relation("StoreToColor")
@@ -29,11 +30,26 @@ model Employee {
   name      String
   email     String   @unique
   phone     String
-  hours     String[]
+  hours     Hour[]  @relation("EmployeeToHours")
   createdAt DateTime @default(now())
   isActive  Boolean  @default(true)
   store     Store    @relation("StoreToEmployee", fields: [storeId], references: [id])
 
+  @@index([storeId])
+}
+
+model Hour {
+  id        String    @id @default(uuid())
+  storeId   String
+  emplyeeId String
+  from      DateTime
+  to        DateTime
+  startTime Int
+  endTime   Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  employee  Employee  @relation("EmployeeToHours", fields: [emplyeeId], references: [id])
+  store      Store      @relation("StoreToHours", fields: [storeId], references: [id])
   @@index([storeId])
 }
 

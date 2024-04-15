@@ -10,7 +10,7 @@ export type EmployeeColumn = {
   name: string;
   email: string;
   phone: string;
-  hours: string[];
+  employeeId: string;
   isActive: boolean;
 }
 
@@ -28,8 +28,8 @@ export const columns: ColumnDef<EmployeeColumn>[] = [
     header: "Phone",
   },
   {
-    accessorKey: "hours",
-    header: "Hours",
+    accessorKey: "employeeId",
+    header: "Employee ID",
   },
   {
     accessorKey: "isActive",

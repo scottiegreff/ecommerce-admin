@@ -31,7 +31,8 @@ export const EmployeesClient: React.FC<EmployeesClientProps> = ({
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
-      <Heading title="API" description="API Calls for Employees" />
+      {/* <DataTable searchKey="name" columns={columns} data={hours} /> */}
+      {/* <Heading title="API" description="API Calls for Employees" /> */}
       <Separator />
       {/* <ApiList entityName="employees" entityIdName="employeeId" /> */}
     </>
