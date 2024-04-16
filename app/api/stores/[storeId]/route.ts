@@ -12,7 +12,7 @@ export async function PATCH(
     const { userId } = auth();
     const body = await req.json();
 
-    const { name } = body;
+    const { name, openTime, closeTime } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -20,6 +20,14 @@ export async function PATCH(
 
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
+    }
+
+    if (!openTime) {
+      return new NextResponse("Open time is required", { status: 400 });
+    }
+
+    if (!closeTime) {
+      return new NextResponse("Close time is required", { status: 400 });
     }
 
     if (!params.storeId) {
@@ -32,7 +40,9 @@ export async function PATCH(
         userId,
       },
       data: {
-        name
+        name,
+        openTime,
+        closeTime
       }
     });
   

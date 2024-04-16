@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -21,45 +21,30 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { set } from "date-fns";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey: string;
-  className?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
-  className,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = useState({})
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
-
-    // onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
-
     state: {
       columnFilters,
-      rowSelection,
     },
   });
-
-  useEffect(() => {
-    console.log("rowSelection", rowSelection)
-
-  }, [setRowSelection, rowSelection]);
-
-
 
   return (
     <div>
@@ -99,7 +84,6 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  // className="bg-red-500"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
