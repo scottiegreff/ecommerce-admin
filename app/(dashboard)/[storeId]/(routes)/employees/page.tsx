@@ -5,7 +5,7 @@ import { formatter } from "@/lib/utils";
 
 import { EmployeesClient } from "./components/client";
 import { EmployeeColumn } from "./components/columns";
-import { ScheduleColumn } from "./components/scheduleColumn";
+
 
 import { EmployeeHours } from "@/types/employeeHours";
 

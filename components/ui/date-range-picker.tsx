@@ -26,10 +26,7 @@ export function DatePickerWithRange({
 
   const { date, setDate } = useDateRangePickerStore();
 
-  useEffect(() => {
-    setDate(selected);
-  }, [selected, setSelected]);
-  
+ 
   return (
     <div className={cn("grid gap-2 text-gray-400", className)}>
       <label className="text-sm font-semibold text-gray-600">DATE OF WORK</label>

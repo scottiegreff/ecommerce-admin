@@ -46,22 +46,28 @@ export const EmployeesClient: React.FC<EmployeesClientProps> = ({
       <div className="flex items-center justify-between">
         <Heading
           title={"Employees Schedules"}
-          description="Manage employees Shifts"
+          description="Manage Shifts"
         />
+        <div className="flex flex-col">
         <Button
+        className="w-min-40"
           onClick={() =>
             router.push(`/${params.storeId}/employees/${employeeId}/schedule`)
           }
         >
-          <Plus className="mr-2 h-4 w-4" /> Add a new Shift
+          <Plus className="mr-2 h-4 w-4" /> Add/Update Shift
         </Button>
+        <p className="text-sm text-gray-500 mt-1">
+          Copy the Employees ID above to edit their shifts
+        </p>
+        </div>
       </div>
-      <DataTable
+      {/* <DataTable
         searchKey={"day" || "name"}
         columns={scheduleColumn}
         data={shiftData}
         className={"mt-4"}
-      />
+      /> */}
       <Separator />
        {/* <Heading title="API" description="API Calls for Employees" /> */}
       {/* <ApiList entityName="employees" entityIdName="employeeId" /> */}

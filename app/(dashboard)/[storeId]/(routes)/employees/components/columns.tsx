@@ -31,17 +31,17 @@ export const columns: ColumnDef<EmployeeColumn>[] = [
     //     aria-label="Select all"
     //   />
     // ),
-    cell: ({ row }) => (
-      <Checkbox
+    // cell: ({ row }) => (
+    //   <Checkbox
         
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => {row.toggleSelected(!!value)}}
-        aria-label="Select row"
-        
-        // disable all other checkboxes when one is selected
-        // disabled={table.state.rowSelection[row.id]}
-      />
-    ),
+    //     checked={row.getIsSelected()}
+    //     onCheckedChange={(value) => {row.toggleSelected(!!value)}}
+    //     aria-label="Select row"
+    //     inputMode="single"
+    //     // disable all other checkboxes when one is selected
+    //     // disabled={table.state.rowSelection[row.id]}
+    //   />
+    // ),
     enableSorting: false,
     enableHiding: false,
   },

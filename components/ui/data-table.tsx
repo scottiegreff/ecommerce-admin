@@ -45,7 +45,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
 
-    onRowSelectionChange: setRowSelection,
+    // onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
 
     state: {

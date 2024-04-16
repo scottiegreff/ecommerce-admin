@@ -194,8 +194,7 @@ export const StoreModal = () => {
                         </SelectContent>
                       </Select>
                       <FormDescription>
-                        You can manage your store's hours of operations in Settings
-                        {/* <Link className="text-red-400" href="/">Settings</Link>. */}
+                      You can manage your store&apos;s hours of operations in Settings
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
