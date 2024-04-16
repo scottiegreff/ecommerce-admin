@@ -28,6 +28,7 @@ import { useOrigin } from "@/hooks/use-origin"
 
 const formSchema = z.object({
   name: z.string().min(2),
+  openTime: z.number().int().min(0)
 });
 
 type SettingsFormValues = z.infer<typeof formSchema>
@@ -45,6 +46,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
+  console.log("initialData", initialData);
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(formSchema),
@@ -110,6 +114,19 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Store name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="openTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Opening Time</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Opening Time" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

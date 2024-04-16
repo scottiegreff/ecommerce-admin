@@ -5,7 +5,8 @@ import { formatter } from "@/lib/utils";
 
 import { EmployeesClient } from "./components/client";
 import { EmployeeColumn } from "./components/columns";
-import { EmployeesShifts } from "./[employeeId]/components/employees-shifts";
+import { ScheduleColumn } from "./components/scheduleColumn";
+
 import { EmployeeHours } from "@/types/employeeHours";
 
 const EmployeePage = async ({ params }: { params: { storeId: string } }) => {
@@ -18,7 +19,18 @@ const EmployeePage = async ({ params }: { params: { storeId: string } }) => {
     },
   });
 
-  // console.log("EMPLOYEE FROM DB IN OUTER PAGE: ",employee);
+  const schedule = await prismadb.hour.findMany({
+    where: {
+      storeId: params.storeId,
+    },
+    include: {
+      employee: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
 
   const formattedEmployee: EmployeeColumn[] = employee.map((item) => ({
     id: item.id,
@@ -31,18 +43,37 @@ const EmployeePage = async ({ params }: { params: { storeId: string } }) => {
   }));
   // console.log("FORMATTED EMPLOYEE: ", formattedEmployee);
 
-  const employeeHours: EmployeeHours[] = employee.map((item) => ({
+  const employeeShifts = schedule.map((item) => ({
+    id: item.id,
+    name: item.employee.name,
+    from: item.from,
+    to: item.to,
+    startTime: item.startTime,
+    endTime: item.endTime,
+  }));
+  console.log("EMPLOYEE Shifts: ", employeeShifts);
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]; 
+  const shiftData = employeeShifts.map((item) => ({
     id: item.id,
     name: item.name,
-    hours: item.hours,
+    from: `${monthNames[item.from.getMonth()]} ${String(item.from.getDate()+1).padStart(2, '0')}`,
+    to: `${monthNames[item.to.getMonth()]} ${String(item.to.getDate()).padStart(2, '0')}`,
+    startTime: item.startTime,
+    endTime: item.endTime,
   }));
-  // console.log("EMPLOYEE HOURS: ", employeeHours);
+  console.log("Shift Data: ", shiftData);
+  // employeeShifts.map((item) => {
+  //   // change the format of the date to be more readable
+  //   const from = new Date(item.from);
+  //   const to = new Date(item.to);
+   
+  //   const formattedDate = `${monthNames[from.getMonth()]} ${String(from.getDate()).padStart(2, '0')}`;
+  // });
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <EmployeesClient data={formattedEmployee} />
-        {/* <EmployeesShifts data={employeeHours} /> */}
+        <EmployeesClient data={formattedEmployee} shiftData={shiftData} />
       </div>
     </div>
   );

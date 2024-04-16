@@ -13,6 +13,8 @@ model Store {
   userId     String
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  openTime   Int         @default(900) // 9:00 AM
+  closeTime  Int         @default(1600) // 6:00 PM
   heros      Hero[]      @relation("StoreToHero")
   employees  Employee[]  @relation("StoreToEmployee")
   hours      Hour[]     @relation("StoreToHours")
