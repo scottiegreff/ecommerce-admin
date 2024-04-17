@@ -51,7 +51,7 @@ const EmployeePage = async ({ params }: { params: { storeId: string } }) => {
     startTime: item.startTime,
     endTime: item.endTime,
   }));
-  console.log("EMPLOYEE Shifts: ", employeeShifts);
+  
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]; 
   const shiftData = employeeShifts.map((item) => ({
     id: item.id,
@@ -61,7 +61,7 @@ const EmployeePage = async ({ params }: { params: { storeId: string } }) => {
     startTime: item.startTime,
     endTime: item.endTime,
   }));
-  console.log("Shift Data: ", shiftData);
+ 
   // employeeShifts.map((item) => {
   //   // change the format of the date to be more readable
   //   const from = new Date(item.from);

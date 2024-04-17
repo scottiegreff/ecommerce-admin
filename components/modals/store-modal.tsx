@@ -33,11 +33,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { fi } from "date-fns/locale";
 
 const formSchema = z.object({
   name: z.string().min(1),
-  openTime: z.number().min(0),
-  closeTime: z.number().min(0),
+  openTime: z.string().min(1),
+  closeTime: z.string().min(1),
 });
 
 export const StoreModal = () => {
@@ -50,23 +51,23 @@ export const StoreModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      openTime: 0,
-      closeTime: 0,
+      openTime: "",
+      closeTime: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-
     try {
       // const { openTime } = values;
       setLoading(true);
-      if(values.openTime >= values.closeTime) {
+      if (values.openTime <= values.closeTime) {
         toast.error("Closing time must be after opening time");
         return;
       }
 
       const response = await axios.post("/api/stores", values);
       // Refreshes the page and redirects to the store page
+
       window.location.assign(`/${response.data.id}`);
     } catch (error) {
       toast.error("Something went wrong");
@@ -112,24 +113,24 @@ export const StoreModal = () => {
                   name="openTime"
                   render={({ field }) => (
                     <FormItem>
+                      {/* (value) => field.onChange(parseInt(value)) */}
                       <FormLabel>Opening Time</FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(parseInt(value))}
-                        value={field.value}
-                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value.toString()}
                       >
                         <FormControl>
                           <SelectTrigger className="w-[280px]">
                             <SelectValue placeholder="Select an opening time" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="w-[250px] h-[300px]">
+                        <SelectContent className="SelectContent w-[250px] h-[300px]">
                           <SelectGroup>
                             <SelectLabel>AM</SelectLabel>
                             {amHours.map((hour) => (
                               <SelectItem
                                 key={hour.hourNum}
-                                value={hour.hourNum}
+                                value={hour.hourNum.toString()}
                               >
                                 {hour.hourLabel}
                               </SelectItem>
@@ -157,24 +158,24 @@ export const StoreModal = () => {
                   name="closeTime"
                   render={({ field }) => (
                     <FormItem>
+                      {/* (value) => field.onChange(parseInt(value)) */}
                       <FormLabel>Closing Time</FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(parseInt(value))}
-                        value={field.value}
-                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value.toString()}
                       >
                         <FormControl>
                           <SelectTrigger className="w-[280px]">
                             <SelectValue placeholder="Select an closing time" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="w-[250px] h-[300px]">
+                        <SelectContent className="SelectContent w-[250px] h-[300px]">
                           <SelectGroup>
                             <SelectLabel>AM</SelectLabel>
-                            {amHours.map((hour) => (
+                            {pmHours.map((hour) => (
                               <SelectItem
                                 key={hour.hourNum}
-                                value={hour.hourNum}
+                                value={hour.hourNum.toString()}
                               >
                                 {hour.hourLabel}
                               </SelectItem>
@@ -193,9 +194,6 @@ export const StoreModal = () => {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                      <FormDescription>
-                      You can manage your store&apos;s hours of operations in Settings
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

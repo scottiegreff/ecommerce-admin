@@ -31,6 +31,14 @@ export const scheduleColumn: ColumnDef<ScheduleColumn>[] = [
         accessorKey: "day",
         header: "Day",
       },
+      {
+        accessorKey: "openTime",
+        header: "Open Time",
+      },
+      { 
+        accessorKey: "closeTime",
+        header: "Close Time",
+      }
     ];
 
 //     for (let i = openTime; i <= closeTime; i += 60) { // Increment by 60 minutes (1 hour)
