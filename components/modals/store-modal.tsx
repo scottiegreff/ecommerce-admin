@@ -141,7 +141,7 @@ export const StoreModal = () => {
                             {pmHours.map((hour) => (
                               <SelectItem
                                 key={hour.hourNum}
-                                value={hour.hourNum}
+                                value={hour.hourNum.toString()}
                               >
                                 {hour.hourLabel}
                               </SelectItem>
@@ -186,7 +186,7 @@ export const StoreModal = () => {
                             {pmHours.map((hour) => (
                               <SelectItem
                                 key={hour.hourNum}
-                                value={hour.hourNum}
+                                value={hour.hourNum.toString()}
                               >
                                 {hour.hourLabel}
                               </SelectItem>
