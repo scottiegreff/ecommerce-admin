@@ -52,8 +52,6 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
   const toastMessage = initialData ? "Staff updated." : "Staff created.";
   const action = initialData ? "Save changes" : "Create";
 
-  // CONSOLE LOGGING
-  console.log("INITIAL DATA FROM FORM", initialData);
   const defaultValues = initialData
     ? {
         ...initialData,

@@ -54,13 +54,6 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  useEffect(() => {
-    console.log("rowSelection", rowSelection)
-
-  }, [setRowSelection, rowSelection]);
-
-
-
   return (
     <div>
       <div className="flex items-center py-4">

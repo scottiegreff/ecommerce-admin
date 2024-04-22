@@ -24,6 +24,7 @@ model Store {
   orders     Order[]     @relation("StoreToOrder")
   products   Product[]   @relation("StoreToProduct")
   sizes      Size[]      @relation("StoreToSize")
+  services   Service[]   @relation("StoreToService")
 }
 
 model Employee {
@@ -32,7 +33,7 @@ model Employee {
   name      String
   email     String   @unique
   phone     String
-  hours     Hour[]  @relation("EmployeeToHours")
+  hours     Hour[]   @relation("EmployeeToHours")
   createdAt DateTime @default(now())
   isActive  Boolean  @default(true)
   store     Store    @relation("StoreToEmployee", fields: [storeId], references: [id])
@@ -91,6 +92,7 @@ model Category {
   billboard   Billboard @relation(fields: [billboardId], references: [id])
   store       Store     @relation("StoreToCategory", fields: [storeId], references: [id])
   products    Product[] @relation("CategoryToProduct")
+  services    Service[] @relation("CategoryToService")
 
   @@index([storeId])
   @@index([billboardId])
@@ -121,6 +123,26 @@ model Product {
   @@index([colorId])
 }
 
+model Service {
+  id         String      @id @default(uuid())
+  storeId    String
+  categoryId String
+  name       String
+  time       Int
+  price      Decimal
+  isFeatured Boolean     @default(false)
+  isArchived Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  images     Image[]
+  orderItems OrderItem[]
+  category   Category    @relation("CategoryToService", fields: [categoryId], references: [id])
+  store      Store       @relation("StoreToService", fields: [storeId], references: [id])
+
+  @@index([storeId])
+  @@index([categoryId])
+}
+
 model Order {
   id         String      @id @default(uuid())
   storeId    String
@@ -139,8 +161,10 @@ model OrderItem {
   id        String  @id @default(uuid())
   orderId   String
   productId String
+  serviceId String
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
+  service   Service @relation(fields: [serviceId], references: [id])
 
   @@index([orderId])
   @@index([productId])
@@ -174,11 +198,13 @@ model Color {
 
 model Image {
   id        String   @id @default(uuid())
-  productId String
+  productId String?
+  serviceId String?
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  service   Service?  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   @@index([productId])
+  @@index([serviceId])
 }

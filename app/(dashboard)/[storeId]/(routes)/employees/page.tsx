@@ -191,7 +191,7 @@ const EmployeePage = async ({ params }: { params: { storeId: string } }) => {
           key={index}
           className="grid grid-cols-12 md:w-[95vw] py-1 m-auto text-sm text-md md:text-md border-b border-black"
         >
-          <div className="p-1 border-black border-e">{item.name}</div>
+          <div className="p-1 border-black border-e font-semibold">{item.name}</div>
           <div className="p-1 border-black border-e">{item.date}</div>
           <div className="p-1 border-black border-e">{item.startTime}</div>
           <div className="p-1 border-black border-e">{item.endTime}</div>

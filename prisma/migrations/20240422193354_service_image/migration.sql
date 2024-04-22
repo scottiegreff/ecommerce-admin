@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Image" ALTER COLUMN "productId" DROP NOT NULL,
+ALTER COLUMN "serviceId" DROP NOT NULL;
