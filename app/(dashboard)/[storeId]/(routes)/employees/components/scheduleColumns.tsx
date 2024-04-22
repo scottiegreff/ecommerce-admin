@@ -1,11 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table";
-import prismadb from "@/lib/prismadb";
 
-export type ScheduleColumn = {
-  name: string;
-  day: string;
-  [hour: string]: string; // Dynamic keys for each hour
-};
+// export type ScheduleColumn = {
+//   name: string;
+//   day: string;
+//   [hour: string]: string; // Dynamic keys for each hour
+// };
 
 // const getStoreScheduleColumns = async (storeId: string): Promise<ColumnDef<ScheduleColumn>[]> => {
 //   try {
@@ -22,24 +21,32 @@ export type ScheduleColumn = {
 //     const openTime = store.openTime;
 //     const closeTime = store.closeTime;
 
-export const scheduleColumn: ColumnDef<ScheduleColumn>[] = [
-      {
-        accessorKey: "name",
-        header: "Name",
-      },
-      {
-        accessorKey: "day",
-        header: "Day",
-      },
-      {
-        accessorKey: "openTime",
-        header: "Open Time",
-      },
-      { 
-        accessorKey: "closeTime",
-        header: "Close Time",
-      }
-    ];
+// export type EmployeeShiftsColumn = {
+//   name: string;
+//   daysOfWork: String[];
+//   startTime: Number;
+//   endTime: Number;
+// };
+
+// export const employeeShiftsColumn: ColumnDef<EmployeeShiftsColumn>[] = [
+//       {
+//         accessorKey: "name",
+//         header: "Name",
+//       },
+//       {
+//         accessorKey: "startTime",
+//         header: "Start Time",
+    
+//       },
+//       {
+//         accessorKey: "endTime",
+//         header: "End Time",
+//       },
+//       {
+//         accessorKey: "daysOfWork",
+//         header: "Day",
+//       },
+//     ];
 
 //     for (let i = openTime; i <= closeTime; i += 60) { // Increment by 60 minutes (1 hour)
 //       const hour = i / 60; // Convert minutes to hours

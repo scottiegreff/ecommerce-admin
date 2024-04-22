@@ -10,21 +10,23 @@ import { Separator } from "@/components/ui/separator";
 import { ApiList } from "@/components/ui/api-list";
 
 import { EmployeeColumn, columns } from "./columns";
-import { ScheduleColumn, scheduleColumn } from "./scheduleColumn";
+// import { EmployeeShiftsColumn, employeeShiftsColumn } from "./scheduleColumns";
+// import { ScheduleColumn, scheduleColumn } from "./scheduleColumn";
+// import { employeeShiftsColumn, EmployeeShifts  } from "./scheduleColumns";
 
 interface EmployeesClientProps {
   data: EmployeeColumn[];
-  shiftData: any;
+  // shiftData: EmployeeShiftsColumn[];
 }
 
 export const EmployeesClient: React.FC<EmployeesClientProps> = ({
   data,
-  shiftData,
+  // shiftData,
 }) => {
   const params = useParams();
   const router = useRouter();
-
   const employeeId = data[0]?.employeeId;
+
 
   return (
     <>
@@ -59,12 +61,12 @@ export const EmployeesClient: React.FC<EmployeesClientProps> = ({
           </p>
         </div>
       </div>
-      <DataTable
+       {/* <DataTable
         searchKey={"day" || "name"}
-        columns={scheduleColumn}
+        columns={employeeShiftsColumn}
         data={shiftData}
         className={"mt-4"}
-      />
+      />  */}
       <Separator />
       {/* <Heading title="API" description="API Calls for Employees" /> */}
       {/* <ApiList entityName="employees" entityIdName="employeeId" /> */}

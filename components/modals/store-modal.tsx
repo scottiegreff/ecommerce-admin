@@ -37,8 +37,6 @@ import { fi } from "date-fns/locale";
 
 const formSchema = z.object({
   name: z.string().min(1),
-  openTime: z.string().min(1),
-  closeTime: z.string().min(1),
 });
 
 export const StoreModal = () => {
@@ -51,23 +49,13 @@ export const StoreModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      openTime: "",
-      closeTime: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      // const { openTime } = values;
-      setLoading(true);
-      if (values.openTime <= values.closeTime) {
-        toast.error("Closing time must be after opening time");
-        return;
-      }
-
-      const response = await axios.post("/api/stores", values);
+      const response = await axios.post("/api/stores", data);
       // Refreshes the page and redirects to the store page
-
       window.location.assign(`/${response.data.id}`);
     } catch (error) {
       toast.error("Something went wrong");
@@ -105,99 +93,13 @@ export const StoreModal = () => {
                     </FormItem>
                   )}
                 />
-                <h3 className="font-bold mt-10 mb-5 text-[1.05rem]">
+                <h3 className="font-bold mt-10 mb-1 text-[1.05rem]">
                   Hours of Operation
                 </h3>
-                <FormField
-                  control={form.control}
-                  name="openTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      {/* (value) => field.onChange(parseInt(value)) */}
-                      <FormLabel>Opening Time</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-[280px]">
-                            <SelectValue placeholder="Select an opening time" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="SelectContent w-[250px] h-[300px]">
-                          <SelectGroup>
-                            <SelectLabel>AM</SelectLabel>
-                            {amHours.map((hour) => (
-                              <SelectItem
-                                key={hour.hourNum}
-                                value={hour.hourNum.toString()}
-                              >
-                                {hour.hourLabel}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                          <SelectGroup className="border-t border-slate-950 mt-4 pt-4">
-                            <SelectLabel>PM</SelectLabel>
-                            {pmHours.map((hour) => (
-                              <SelectItem
-                                key={hour.hourNum}
-                                value={hour.hourNum.toString()}
-                              >
-                                {hour.hourLabel}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="closeTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      {/* (value) => field.onChange(parseInt(value)) */}
-                      <FormLabel>Closing Time</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-[280px]">
-                            <SelectValue placeholder="Select an closing time" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="SelectContent w-[250px] h-[300px]">
-                          <SelectGroup>
-                            <SelectLabel>AM</SelectLabel>
-                            {pmHours.map((hour) => (
-                              <SelectItem
-                                key={hour.hourNum}
-                                value={hour.hourNum.toString()}
-                              >
-                                {hour.hourLabel}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                          <SelectGroup className="border-t border-slate-950 mt-4 pt-4">
-                            <SelectLabel>PM</SelectLabel>
-                            {pmHours.map((hour) => (
-                              <SelectItem
-                                key={hour.hourNum}
-                                value={hour.hourNum.toString()}
-                              >
-                                {hour.hourLabel}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <h3 className="text-[.85rem] text-slate-500">
+                  By Default your stores hours of operation are 900 - 1600. To
+                  change go to SETTINGS.
+                </h3>
                 <div className="pt-6 space-x-2 flex items-center justify-end w-full">
                   <Button
                     disabled={loading}

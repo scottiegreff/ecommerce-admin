@@ -46,19 +46,22 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // console.log("initialData", initialData);
-
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData,
   });
 
   const onSubmit = async (data: SettingsFormValues) => {
+    if (data.openTime >= data.closeTime && data.openTime !== 0 && data.closeTime !== 0) {
+      toast.error("Closing time must be after opening time");
+      return;
+    }
     try {
       setLoading(true);
       await axios.patch(`/api/stores/${params.storeId}`, data);
       router.refresh();
       toast.success("Store updated.");
+      
     } catch (error: any) {
       toast.error("Something went wrong.");
     } finally {

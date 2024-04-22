@@ -1,6 +1,5 @@
 // "use client";
 
-
 // import * as React from "react";
 // import { amHours } from "@/public/hours";
 // import { pmHours } from "@/public/hours";
@@ -36,7 +35,12 @@
 //     to: addDays(new Date(2022, 0, 20), 20),
 //   });
 
+// const date = new Date('1983-11-29T06:00:08.080Z');
 
+// // Convert to PDT
+// const pdtDate = date.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+
+// console.log(pdtDate);
 
 //   return (
 //     <>
