@@ -44,14 +44,14 @@ model Employee {
 model Hour {
   id        String    @id @default(uuid())
   storeId   String
-  emplyeeId String
+  employeeId String
   from      DateTime
   to        DateTime
   startTime Int
   endTime   Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  employee  Employee  @relation("EmployeeToHours", fields: [emplyeeId], references: [id])
+  employee  Employee  @relation("EmployeeToHours", fields: [employeeId], references: [id])
   store      Store      @relation("StoreToHours", fields: [storeId], references: [id])
   @@index([storeId])
 }

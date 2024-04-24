@@ -11,6 +11,14 @@ const EmployeePage = async ({
     where: {
       id: params.employeeId,
     },
+    include: {  
+      hours: true,
+    }
+  });
+  const hours = await prismadb.hour.findUnique({
+    where: {
+      id: params.employeeId,
+    },
   });
 
   return (
@@ -23,23 +31,3 @@ const EmployeePage = async ({
 };
 
 export default EmployeePage;
-
-// const newEvent = await prisma.event.create({
-//   data: {
-//     name: "Annual Conference",
-//     description: "A yearly gathering for professionals.",
-//     dates: [
-//       new Date("2024-05-20T09:00:00Z"),
-//       new Date("2024-05-21T09:00:00Z"),
-//     ],
-//   },
-// });
-
-// const updateEvent = await prisma.event.update({
-//   where: { id: 1 },
-//   data: {
-//     dates: {
-//       push: new Date("2024-05-22T09:00:00Z"),
-//     },
-//   },
-// });

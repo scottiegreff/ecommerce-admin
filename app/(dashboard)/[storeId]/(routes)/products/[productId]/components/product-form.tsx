@@ -67,6 +67,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const toastMessage = initialData ? 'Product updated.' : 'Product created.';
   const action = initialData ? 'Save changes' : 'Create';
 
+  console.log("I DATA",initialData);
   const defaultValues = initialData ? {
     ...initialData,
     price: parseFloat(String(initialData?.price)),
@@ -182,7 +183,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <FormItem>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input type="number" disabled={loading} placeholder="9.99" {...field} />
+                    <Input type="number" min={0} max={100000} disabled={loading} placeholder="9.99" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

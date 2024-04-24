@@ -1,15 +1,15 @@
 "use client";
 
+import { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-
 import { CellAction } from "./cell-action";
-
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ta } from "date-fns/locale";
 import { table } from "console";
+import { effect } from "zod";
 
-export type EmployeeColumn = {
+export type EmployeeColumn = { 
   id: string;
   name: string;
   email: string;
@@ -21,27 +21,14 @@ export type EmployeeColumn = {
 export const columns: ColumnDef<EmployeeColumn>[] = [
   {
     id: "select",
-    // header: ({ table }) => (
-    //   <Checkbox
-    //     checked={
-    //       table.getIsAllPageRowsSelected() ||
-    //       (table.getIsSomePageRowsSelected() && "indeterminate")
-    //     }
-    //     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //     aria-label="Select all"
-    //   />
-    // ),
-    // cell: ({ row }) => (
-    //   <Checkbox
-        
-    //     checked={row.getIsSelected()}
-    //     onCheckedChange={(value) => {row.toggleSelected(!!value)}}
-    //     aria-label="Select row"
-    //     inputMode="single"
-    //     // disable all other checkboxes when one is selected
-    //     // disabled={table.state.rowSelection[row.id]}
-    //   />
-    // ),
+   
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
     enableSorting: false,
     enableHiding: false,
   },

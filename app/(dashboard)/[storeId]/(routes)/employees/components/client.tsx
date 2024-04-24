@@ -1,4 +1,5 @@
 "use client";
+import useEmployeeSelectionStore from "@/hooks/use-employee-selection-store";
 
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -27,6 +28,10 @@ export const EmployeesClient: React.FC<EmployeesClientProps> = ({
   const router = useRouter();
   const employeeId = data[0]?.employeeId;
 
+  const selectedRow = useEmployeeSelectionStore((state) => state.selectedRow);
+  const employeeIdSelected = selectedRow?.employeeId;
+
+console.log(selectedRow);
 
   return (
     <>
@@ -36,16 +41,17 @@ export const EmployeesClient: React.FC<EmployeesClientProps> = ({
           title={`Employees (${data.length})`}
           description="Manage employees"
         />
-        <Button onClick={() => router.push(`/${params.storeId}/employees/new`)}>
-          <Plus className="mr-2 h-4 w-4" /> Add New
+        <Button onClick={() => router.push(`/${params.storeId}/employees/${employeeIdSelected}`)}>
+          <Plus className="mr-2 h-4 w-4" /> {employeeIdSelected ? `Edit ${selectedRow.name}'s Shifts` : "New Employee"}
         </Button>
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
+      
 
       {/* Employees Edit Shifts */}
       <Separator />
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <Heading title={"Employees Schedules"} description="Manage Shifts" />
         <div className="flex flex-col">
           <Button
@@ -60,14 +66,14 @@ export const EmployeesClient: React.FC<EmployeesClientProps> = ({
             Copy the Employees ID above to edit their shifts
           </p>
         </div>
-      </div>
+      </div> */}
        {/* <DataTable
         searchKey={"day" || "name"}
         columns={employeeShiftsColumn}
         data={shiftData}
         className={"mt-4"}
       />  */}
-      <Separator />
+      {/* <Separator /> */}
       {/* <Heading title="API" description="API Calls for Employees" /> */}
       {/* <ApiList entityName="employees" entityIdName="employeeId" /> */}
     </>

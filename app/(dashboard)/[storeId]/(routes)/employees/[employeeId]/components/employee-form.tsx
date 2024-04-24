@@ -7,9 +7,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { Employee } from "@prisma/client";
+import { Employee, Hour } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
 
+import { CalendarIcon } from "lucide-react";
+import { addDays, format } from "date-fns";
+import { DateRange } from "react-day-picker";
+
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,14 +28,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Checkbox } from "@/components/ui/checkbox";
-
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const formSchema = z.object({
+  from: z.coerce.date(),
+  to: z.coerce.date(),
+  startTime: z.coerce.number().min(1),
+  endTime: z.coerce.number().min(1),
   name: z.string().min(1),
   email: z.string().email(),
   phone: z.string().min(1),
@@ -38,40 +51,42 @@ const formSchema = z.object({
 type EmployeeFormValues = z.infer<typeof formSchema>;
 
 interface EmployeeFormProps {
-  initialData: Employee | null;
+  initialData: (Employee & { hours: Hour[] }) | null;
 }
 
 export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // const [date, setDate] = useState<DateRange | undefined>({
+  //   from: new Date(2022, 0, 20),
+  //   to: addDays(new Date(2022, 0, 20), 20),
+  // });
+
+  // console.log("INITIAL DATA", initialData);
 
   const title = initialData ? "Edit staff" : "Create staff";
   const description = initialData ? "Edit a staff." : "Add a new staff";
   const toastMessage = initialData ? "Staff updated." : "Staff created.";
   const action = initialData ? "Save changes" : "Create";
 
-  const defaultValues = initialData
-    ? {
-        ...initialData,
-      }
-    : {
-        name: "",
-        email: "",
-        phone: "",
-      };
-
   const form = useForm<EmployeeFormValues>({
     resolver: zodResolver(formSchema),
-    ...defaultValues,
+    defaultValues: initialData || {
+      name: "",
+      phone: "",
+      email: "",
+      isActive: true,
+      from: new Date(),
+      to: new Date(),
+      startTime: 0,
+      endTime: 0,
+    },
   });
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    // let fromDateHour = date?.from?.getHours();
-    // let toDateHour = date?.to?.getHours();
-    // const startDate = date?.from?.setHours(data.startTime) as unknown as Date;
-    // const endDate: Date = date?.to?.setHours(data.endTime) as unknown as Date;;
     console.log("DATA FROM FORM", data);
 
     try {
@@ -141,8 +156,148 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          {/* NAME */}
-          <div className="md:grid md:grid-cols-3 gap-8">
+          <div className="md:grid md:grid-cols-2 gap-8 py-10">
+            {/* FROM SHIFT DATE PICKER */}
+            <FormField
+              control={form.control}
+              name="from"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>START of Shift Dates</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a start date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription>
+                    {/* Your date of birth is used to calculate your age. */}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* TO SHIFT DATE PICKER */}
+            <FormField
+              control={form.control}
+              name="to"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>END of Shift Dates</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick an end date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription>
+                    {/* Your date of birth is used to calculate your age. */}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* START TIME */}
+
+            <FormField
+              control={form.control}
+              name="startTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Start Time</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step={100}
+                      min={0}
+                      max={2400}
+                      disabled={loading}
+                      placeholder="000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* END TIME */}
+            <FormField
+              control={form.control}
+              name="endTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>End Time</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step={100}
+                      min={0}
+                      max={2400}
+                      disabled={loading}
+                      placeholder="000"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Separator />
+          <div className="md:grid md:grid-cols-2 gap-8 py-10">
+            {/* NAME */}
             <FormField
               control={form.control}
               name="name"

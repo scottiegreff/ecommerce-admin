@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
+import useEmployeeSelectionStore from "@/hooks/use-employee-selection-store";
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -37,22 +39,40 @@ export function DataTable<TData, TValue>({
   className,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = useState({})
+  const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
-
-    // onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
+    enableMultiRowSelection: false,
 
     state: {
       columnFilters,
       rowSelection,
     },
   });
+
+let row = {
+  createdAt: "",
+  email: "",
+  employeeId: "",
+  isActive: true,
+  name: "",
+  phone: "",
+};
+
+  useEffect(() => {
+    const selectedRow = table
+      .getFilteredSelectedRowModel()
+      .rows.map((row) => row.original);
+    console.log("selectedRow", selectedRow);
+    row = selectedRow[0] as any;
+    useEmployeeSelectionStore.setState({ selectedRow: row });
+  }, [table.getFilteredSelectedRowModel().rows]);
 
   return (
     <div>
@@ -66,6 +86,7 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
       </div>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -134,6 +155,8 @@ export function DataTable<TData, TValue>({
         >
           Next
         </Button>
+      </div>
+      <div className="flex-1 text-sm text-muted-foreground">
       </div>
     </div>
   );
