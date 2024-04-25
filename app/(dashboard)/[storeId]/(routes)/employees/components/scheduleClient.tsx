@@ -175,6 +175,7 @@ export const ScheduleClient: React.FC<ScheduleClientProps> = ({ data }) => {
           {getStoreHoursArr.map((storeHour, idx) => (
             <div
               key={idx}
+              onClick={() => alert(item.date)}
               className={`border-e border-black ${
                 item.hours?.includes(storeHour)
                   ? "bg-red-200 rounded-2xl p-1 my-1 mx-[.1rem] border border-black hover:bg-green-100 hover:scale-110 transition-transform duration-500"
