@@ -6,7 +6,7 @@ import prismadb from "@/lib/prismadb";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin":
-    "https://ecommerce-admin-scottiegreffs-projects.vercel.app/api/94221d6a-4c12-4b42-aec5-1a7570618458/checkout",
+    "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
