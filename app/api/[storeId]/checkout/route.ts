@@ -5,8 +5,7 @@ import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin":
-    "*",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
@@ -39,7 +38,7 @@ export async function POST(
     line_items.push({
       quantity: 1,
       price_data: {
-        currency: "USD",
+        currency: "CAD",
         product_data: {
           name: product.name,
         },

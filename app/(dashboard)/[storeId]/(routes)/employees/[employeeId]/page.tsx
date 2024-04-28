@@ -11,11 +11,11 @@ const EmployeePage = async ({
     where: {
       id: params.employeeId,
     },
-    include: {  
-      hours: true,
-    }
+    include: {
+      shifts: true,
+    },
   });
-  const hours = await prismadb.hour.findUnique({
+  const shifts = await prismadb.shift.findUnique({
     where: {
       id: params.employeeId,
     },

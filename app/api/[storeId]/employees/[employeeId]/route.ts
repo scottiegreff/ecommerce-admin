@@ -73,7 +73,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { name, email, phone, isActive, from, to, startTime, endTime } = body;
+    const { name, email, phone, color, isActive} = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -95,24 +95,12 @@ export async function PATCH(
       return new NextResponse("Phone is required", { status: 400 });
     }
 
+    if (!color) {
+      return new NextResponse("Color is required", { status: 400 });
+    }
+
     if (!isActive) {
       return new NextResponse("Active is required", { status: 400 });
-    }
-
-    if (!from) {
-      return new NextResponse("From is required", { status: 400 });
-    }
-
-    if (!to) {
-      return new NextResponse("To is required", { status: 400 });
-    }
-
-    if (!startTime) {
-      return new NextResponse("Start time is required", { status: 400 });
-    }
-
-    if (!endTime) {
-      return new NextResponse("End time is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -134,20 +122,10 @@ export async function PATCH(
         name,
         email,
         phone,
+        color,
         isActive,
       },
     });
-    // await prismadb.hour.update({
-    //   where: {
-    //     id: params.employeeId,
-    //   },
-    //   data: {
-    //     from,
-    //     to,
-    //     startTime,
-    //     endTime,
-    //   },
-    // });
 
 
     const employee = await prismadb.employee.findUnique({

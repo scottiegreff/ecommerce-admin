@@ -12,7 +12,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const { name, email, phone, isActive } = body;
+    const { name, email, phone, color, isActive } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -28,6 +28,10 @@ export async function POST(
 
     if (!phone) {
       return new NextResponse("Phone is required", { status: 400 });
+    }
+
+    if (!color) {
+      return new NextResponse("Colour is required", { status: 400 });
     }
 
     if (!isActive) {
@@ -54,16 +58,8 @@ export async function POST(
         name,
         email,
         phone,
+        color,
         isActive,
-        // hours: {
-        //   createMany: {
-        //     data: [
-        //       ...hours.map((hour: { day: string; open: string; close: string }) => hour),
-        //     ],
-        //   },
-        // },
-        // isActive,
-
         storeId: params.storeId,
       },
     });

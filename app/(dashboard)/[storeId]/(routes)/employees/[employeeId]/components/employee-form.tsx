@@ -7,16 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { Employee, Hour } from "@prisma/client";
+import { Employee, Shift } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 
-import { CalendarIcon } from "lucide-react";
-import { addDays, format } from "date-fns";
-import { DateRange } from "react-day-picker";
-
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,30 +22,34 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 const formSchema = z.object({
-  from: z.coerce.date(),
-  to: z.coerce.date(),
-  startTime: z.coerce.number().min(1),
-  endTime: z.coerce.number().min(1),
   name: z.string().min(1),
   email: z.string().email(),
   phone: z.string().min(1),
+  color: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .min(7)
+    .max(7),
   isActive: z.boolean().default(true),
 });
 
 type EmployeeFormValues = z.infer<typeof formSchema>;
 
 interface EmployeeFormProps {
-  initialData: (Employee & { hours: Hour[] }) | null;
+  initialData: (Employee & { shifts: Shift[] }) | null;
 }
 
 export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
@@ -60,16 +58,31 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const colorArr = [
+    "#FF0000", // Red
+    "#00FF00", // Green
+    "#0000FF", // Blue
+    "#FFFF00", // Yellow
+    "#FF00FF", // Magenta
+    "#00FFFF", // Cyan
+    "#FFA500", // Orange
+    "#800080", // Purple
+    "#008000", // Dark Green
+    "#008080", // Teal
+    "#FFC0CB", // Pink
+    "#800000", // Maroon
+    "#008B8B", // Dark Cyan
+    "#808000", // Olive
+    "#4B0082", // Indigo
+    "#8B4513", // Saddle Brown
+    "#2E8B57", // Sea Green
+    "#000080", // Navy
+  ];
 
-  // const [date, setDate] = useState<DateRange | undefined>({
-  //   from: new Date(2022, 0, 20),
-  //   to: addDays(new Date(2022, 0, 20), 20),
-  // });
-
-  // console.log("INITIAL DATA", initialData);
-
-  const title = initialData ? "Edit staff" : "Create staff";
-  const description = initialData ? "Edit a staff." : "Add a new staff";
+  const title = initialData ? "Edit Staff" : "Create Staff";
+  const description = initialData
+    ? `Edit ${initialData.name}'s Personal Information.`
+    : "Add a new staff";
   const toastMessage = initialData ? "Staff updated." : "Staff created.";
   const action = initialData ? "Save changes" : "Create";
 
@@ -79,16 +92,13 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
       name: "",
       phone: "",
       email: "",
+      color: "#D2A0A0",
       isActive: true,
-      from: new Date(),
-      to: new Date(),
-      startTime: 0,
-      endTime: 0,
     },
   });
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("DATA FROM FORM", data);
 
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    console.log("DATA FROM ON SUBMIT FORM", data);
     try {
       setLoading(true);
       if (initialData) {
@@ -136,6 +146,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
         onConfirm={onDelete}
         loading={loading}
       />
+
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -149,152 +160,12 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
           </Button>
         )}
       </div>
-      <Separator />
       {/* FORM */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <div className="md:grid md:grid-cols-2 gap-8 py-10">
-            {/* FROM SHIFT DATE PICKER */}
-            <FormField
-              control={form.control}
-              name="from"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>START of Shift Dates</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a start date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    {/* Your date of birth is used to calculate your age. */}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* TO SHIFT DATE PICKER */}
-            <FormField
-              control={form.control}
-              name="to"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>END of Shift Dates</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick an end date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    {/* Your date of birth is used to calculate your age. */}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* START TIME */}
-
-            <FormField
-              control={form.control}
-              name="startTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Start Time</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step={100}
-                      min={0}
-                      max={2400}
-                      disabled={loading}
-                      placeholder="000"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* END TIME */}
-            <FormField
-              control={form.control}
-              name="endTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>End Time</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step={100}
-                      min={0}
-                      max={2400}
-                      disabled={loading}
-                      placeholder="000"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
           <Separator />
           <div className="md:grid md:grid-cols-2 gap-8 py-10">
             {/* NAME */}
@@ -351,7 +222,49 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="color"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Color</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Color" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                      {colorArr.map((color) => (
+                        <SelectItem
+                          className="w-full"
+                          key={color}
+                          value={color}
+                          disabled={loading}
+                          placeholder="Color"
+                        >
+                          <div className="flex gap-3 items-center">
+                          <div
+                            className="border rounded-full h-6 w-6"
+                            style={{ backgroundColor: color }}
+                            ></div>
+                           <p>{color}</p>
+                           </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Pick a color for employee to display on the schedule
+                    calendar.{" "}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* ACTIVE */}
             <FormField
               control={form.control}
@@ -369,7 +282,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({ initialData }) => {
                   <div className="space-y-1 leading-none">
                     <FormLabel>Currently Active</FormLabel>
                     <FormDescription>
-                      If the employee is currently working.
+                      If the employee is currently working.{" "}
                     </FormDescription>
                   </div>
                 </FormItem>

@@ -17,7 +17,7 @@ model Store {
   closeTime  Int         @default(1600) // 6:00 PM
   heros      Hero[]      @relation("StoreToHero")
   employees  Employee[]  @relation("StoreToEmployee")
-  hours      Hour[]     @relation("StoreToHours")
+  shifts      Shift[]     @relation("StoreToShifts")
   billboards Billboard[] @relation("StoreToBillboard")
   categories Category[]  @relation("StoreToCategory")
   colors     Color[]     @relation("StoreToColor")
@@ -33,7 +33,8 @@ model Employee {
   name      String
   email     String   @unique
   phone     String
-  hours     Hour[]   @relation("EmployeeToHours")
+  color    String
+  shifts     Shift[]   @relation("EmployeeToShifts")
   createdAt DateTime @default(now())
   isActive  Boolean  @default(true)
   store     Store    @relation("StoreToEmployee", fields: [storeId], references: [id])
@@ -41,7 +42,7 @@ model Employee {
   @@index([storeId])
 }
 
-model Hour {
+model Shift {
   id        String    @id @default(uuid())
   storeId   String
   employeeId String
@@ -51,9 +52,11 @@ model Hour {
   endTime   Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  employee  Employee  @relation("EmployeeToHours", fields: [employeeId], references: [id])
-  store      Store      @relation("StoreToHours", fields: [storeId], references: [id])
+  employee  Employee  @relation("EmployeeToShifts", fields: [employeeId], references: [id])
+  store     Store      @relation("StoreToShifts", fields: [storeId], references: [id])
+
   @@index([storeId])
+  @@index([employeeId])
 }
 
 model Hero {
@@ -68,6 +71,7 @@ model Hero {
 
   @@index([storeId])
 }
+
 
 model Billboard {
   id         String     @id @default(uuid())
@@ -97,6 +101,8 @@ model Category {
   @@index([storeId])
   @@index([billboardId])
 }
+
+
 
 model Product {
   id         String      @id @default(uuid())
