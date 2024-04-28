@@ -45,16 +45,18 @@ const EmployeePage = async ({ params }: { params: { storeId: string } }) => {
     },
   });
 
-
   return (
     <>
-  
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        {/* <EmployeesClient data={} />{" "} */}
+      </div>
+
       <div className="flex-1 space-y-4 p-8 pt-6">
         <ScheduleClient data={hours} />{" "}
       </div>
       <Separator />
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <EmployeesClient data={formattedEmployee}/>{" "}
+        <EmployeesClient data={formattedEmployee} />{" "}
       </div>
     </>
   );
